@@ -137,6 +137,30 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="alarm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="alarm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="display_7_seg.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="display_7_seg.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="time.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="time.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ir.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ir.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
