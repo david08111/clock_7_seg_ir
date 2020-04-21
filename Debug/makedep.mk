@@ -6,6 +6,8 @@ alarm.c
 
 display_7_seg.c
 
+rtc.c
+
 time.c
 
 ir.c

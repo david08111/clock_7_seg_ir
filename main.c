@@ -17,6 +17,7 @@
 #include "display_7_seg.h"
 #include "ir.h"
 #include "time.h"
+#include "rtc.h"
 
 
 void init_main(){
@@ -24,24 +25,34 @@ void init_main(){
 	init_DISPLAY();
 	init_TIME_ISR();
 	init_ALARM_ISR();
+	
+	rtc_set_init();
 }
 
 int main(void)
 {	
 	init_main();
+	
+	hour=20;
+	min=53;
     while (1) 
     {	
 		//send_command(DEVICE_ADR, CMD);
 		
-		//show_time(6,23);
+		min = read_register(0x01);
+		hour = read_register(0x02);
 		
-		show_time(min, sek);
-
-		/*for(uint16_t j=0;j<80;j++){
-			show_time(0,j);
-		}*/
-			
-		//_delay_ms(200);
+		show_time(hour, min);
+		
+		/*if(min+1>=60){
+			min=0;
+			hour++;
+		}
+		if(hour+1>=25){
+			hour=0;
+		}
+		
+		show_time(hour, min);*/
 		
     }
 }

@@ -14,11 +14,15 @@
 #define F_CPU 8000000
 #endif
 
+#ifndef TIME_CORR
+#define TIME_CORR 6 // 6-13
+#endif
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
 
-extern volatile uint8_t sek, min, min_zehn, min_ein, sek_zehn, sek_ein;
+extern volatile uint8_t sek, min, hour, min_zehn, min_ein, sek_zehn, sek_ein;
 extern uint16_t timer_overfl_counter;
 
 

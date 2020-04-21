@@ -9,7 +9,7 @@
 
 uint16_t timer_overfl_counter=0;
 
-volatile uint8_t sek=0, min=0, min_zehn=0, min_ein=0, sek_zehn=0, sek_ein=0;
+volatile uint8_t sek=0, min=0, hour=0, min_zehn=0, min_ein=0, sek_zehn=0, sek_ein=0;
 
 void init_TIME_ISR(){
 	TCCR0 = 0x03;
@@ -25,7 +25,7 @@ void init_TIME_ISR(){
 
 ISR(TIMER0_OVF_vect){
 	TCNT0 = 131;
-	if(timer_overfl_counter<=999){
+	if(timer_overfl_counter<=999+TIME_CORR){
 		timer_overfl_counter++;
 	}
 	else{

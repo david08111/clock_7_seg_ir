@@ -172,7 +172,7 @@ uint8_t read_register(uint8_t reg){
 void rtc_set_init(){
 	write_register(0x07, 0x00);
 	write_register(0x00, 0x00);
-	write_register(0x01, 0x01);
-	write_register(0x00, 0x00);
-	write_register(0x00, 0x00);
+	write_register(0x01, 0x0A);
+	write_register(0x02, 0x00);
+	
 }
