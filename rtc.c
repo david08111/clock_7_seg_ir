@@ -8,171 +8,144 @@
 #include "rtc.h"
 
 void init_RTC(){
-	DDRC |= (1<<0)|(1<<1);
-	
-	PORTC |= (1<<0)|(1<<1);
+	TWBR = 0x02;
+	TWAR = 0x6F;
+	TWSR = 0x00;
 }
 
-int get_ack(){
-	uint8_t ack;
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA);
-	_delay_us(1);
-	DDRC &= ~(1<<RTC_SDA);
-	_delay_us(2);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
+void TWI_START(){
+	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
 	
-	if((PINC & (1<<RTC_SDA))==(1<<RTC_SDA)){
-		ack = 1;
+	while(!(TWCR &(1<<TWINT)));
+	if((TWSR&0xF8) != 0x08){
+		//WIP
 	}
-	else{
-		ack = 0;
-	}
-	
-	_delay_us(3);
-	PORTC &= ~(1<<RTC_SCL);
-	
-	DDRC |= (1<<RTC_SDA);
-	
-	return ack;
 }
 
-void write_byte(uint8_t buff_foo){
-	uint8_t ack;
-	for(uint8_t i=7;i>=0;i--){
-		if((buff_foo & (1<<i))==(1<<i)){
-			//voraussetzung RTC_SCL auf LOW angenommen
-			_delay_us(1);
-			PORTC |= (1<<RTC_SDA);
-			_delay_us(4);
-			PORTC |= (1<<RTC_SCL);
-			_delay_us(5);
-			PORTC &= ~(1<<RTC_SCL);
-		}
-		else{
-			_delay_us(1);
-			PORTC &= ~(1<<RTC_SDA);
-			_delay_us(4);
-			PORTC |= (1<<RTC_SCL);
-			_delay_us(5);
-			PORTC &= ~(1<<RTC_SCL);
-		}
-	}
+void TWI_MT_SLA_ACK(){
+	TWDR = SLA_ADDR;
+	TWCR = (1<<TWINT) | (1<<TWEN);
 	
-	ack = get_ack();
-	
+	while(!(TWCR&(1<<TWINT)));
 	
 }
 
-
-void write_register(uint8_t reg, uint8_t val){
-	_delay_us(20);
+void TWI_MT_DATA_ACK(uint8_t send_data){
+	TWDR = send_data;
+	TWCR = (1<<TWINT) | (1<<TWEN);
 	
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA); //startbed
-	_delay_us(5);
-	PORTC &= ~(1<<RTC_SCL);
-	
-	write_byte(0xDE); //adresse + write bit
-	
-	write_byte(reg);
-	write_byte(val);
-	
-	//stopp bed
-	
-	PORTC &= ~(1<<RTC_SCL);
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA);
-	_delay_us(3);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(4);
+	while(!(TWCR&(1<<TWINT)));
 }
 
-uint8_t read_byte(){
-	uint8_t reg_val;
-	_delay_us(1);
-	DDRC &= ~(1<<RTC_SDA);
-	
-	for(uint8_t i=7;i>=0;i--){
-		PORTC &= ~(1<<RTC_SCL);
-		_delay_us(4);
-		PORTC |= (1<<RTC_SCL);
-		_delay_us(1);
-		
-		if((PINC & (1<<RTC_SDA))==(1<<RTC_SDA)){
-			uint8_t bit_add = 1;
-			for(uint8_t j=1;j<i;j++){
-				bit_add*=2;
-			}
-			reg_val += bit_add;
-		}
-		_delay_us(2);
-		
-	}
-	
-	PORTC &= ~(1<<RTC_SCL);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(3);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(4);
-	PORTC &= ~(1<<RTC_SCL);
+void TWI_R_START(){
+	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
+	while(!(TWCR&(1<<TWINT)));
 	
 }
 
-uint8_t read_register(uint8_t reg){
-	_delay_us(20);
-	uint8_t reg_val;
+void TWI_MR_SLA_ACK(){
+	TWDR = SLA_ADDR+1;
+	TWCR = (1<<TWINT) | (1<<TWEN);
 	
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA); //startbed
-	_delay_us(5);
-	PORTC &= ~(1<<RTC_SCL);
+	while(!(TWCR&(1<<TWINT)));
 	
-	write_byte(0xDE);
-	write_byte(reg);
-	
-	//start bed
-	PORTC &= ~(1<<RTC_SCL);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA);
-	
-	
-	
-	write_byte(0xDF);
-	
-	reg_val = read_byte();
-	
-	//stopp bed
-	
-	_delay_us(1);
-	PORTC &= ~(1<<RTC_SDA);
-	_delay_us(3);
-	PORTC |= (1<<RTC_SCL);
-	_delay_us(1);
-	PORTC |= (1<<RTC_SDA);
-	_delay_us(3);
-	
+}
+
+uint8_t TWI_READ_DATABYTE_NACK(){
+	TWCR = (1<<TWINT)|(1<<TWEN);
+	while(!(TWCR&(1<<TWINT)));
+	return TWDR;
+}
+
+void TWI_STOP(){
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
 }
 
 
 void rtc_set_init(){
-	write_register(0x07, 0x00);
-	write_register(0x00, 0x00);
-	write_register(0x01, 0x0A);
-	write_register(0x02, 0x00);
+	TWI_START();
+	TWI_MT_SLA_ACK();
+	TWI_MT_DATA_ACK(0x00); //ADDR
+	TWI_MT_DATA_ACK(0x80); //SEK
+	TWI_MT_DATA_ACK(0x40); //MIN
+	TWI_MT_DATA_ACK(0x02); //HOUR
+	TWI_STOP();
 	
+}
+
+uint8_t rtc_read_reg(uint8_t reg_addr){
+	uint8_t reg_data;
+	
+	TWI_START();
+	TWI_MT_SLA_ACK();
+	TWI_MT_DATA_ACK(reg_addr);
+	TWI_R_START();
+	TWI_MR_SLA_ACK();
+	reg_data = TWI_READ_DATABYTE_NACK();
+	TWI_STOP();
+	return reg_data;
+}
+
+uint8_t rtc_read_sek(){
+	uint8_t reg_data;
+	uint8_t sek, sek_zehn, sek_ein;
+	
+	TWI_START();
+	TWI_MT_SLA_ACK();
+	TWI_MT_DATA_ACK(0x00);
+	TWI_R_START();
+	TWI_MR_SLA_ACK();
+	reg_data = TWI_READ_DATABYTE_NACK();
+	TWI_STOP();
+		
+	sek_zehn = (reg_data&0x70);
+	sek_zehn >>= 4;
+	sek_ein = (reg_data&0x0F);
+	
+	sek = sek_zehn*10 + sek_ein;
+	
+	return sek;
+}
+
+uint8_t rtc_read_min(){
+	uint8_t reg_data;
+	uint8_t min, min_zehn, min_ein;
+	
+	TWI_START();
+	TWI_MT_SLA_ACK();
+	TWI_MT_DATA_ACK(0x01);
+	TWI_R_START();
+	TWI_MR_SLA_ACK();
+	reg_data = TWI_READ_DATABYTE_NACK();
+	TWI_STOP();
+	
+	min_zehn = (reg_data&0x70);
+	min_zehn >>= 4;
+	min_ein = (reg_data&0x0F);
+	
+	min = min_zehn*10 + min_ein;
+	
+	return min;
+}
+
+uint8_t rtc_read_hour(){
+	uint8_t reg_data;
+	uint8_t hour, hour_zehn, hour_ein;
+	
+	TWI_START();
+	TWI_MT_SLA_ACK();
+	TWI_MT_DATA_ACK(0x02);
+	TWI_R_START();
+	TWI_MR_SLA_ACK();
+	reg_data = TWI_READ_DATABYTE_NACK();
+	TWI_STOP();
+	
+	hour_zehn = (reg_data&0x30);
+	hour_zehn >>= 4;
+	hour_ein = (reg_data&0x0F);
+	
+	hour = hour_zehn*10 + hour_ein;
+	
+	
+	return hour;
 }

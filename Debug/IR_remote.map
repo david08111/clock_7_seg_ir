@@ -26,13 +26,16 @@ Discarded input sections
  .data          0x00000000        0x0 rtc.o
  .bss           0x00000000        0x0 rtc.o
  .text.init_RTC
-                0x00000000        0xe rtc.o
- .text.get_ack  0x00000000       0x38 rtc.o
- .text.read_byte
-                0x00000000       0x3c rtc.o
+                0x00000000        0xc rtc.o
+ .text.TWI_STOP
+                0x00000000        0x6 rtc.o
+ .text.rtc_read_reg
+                0x00000000       0x1a rtc.o
  .text          0x00000000        0x0 time.o
  .data          0x00000000        0x0 time.o
  .bss           0x00000000        0x0 time.o
+ .text.init_TIME_ISR
+                0x00000000       0x12 time.o
  .text          0x00000000        0x0 ir.o
  .data          0x00000000        0x0 ir.o
  .bss           0x00000000        0x0 ir.o
@@ -224,7 +227,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3f8
+.text           0x00000000      0x41c
  *(.vectors)
  .vectors       0x00000000       0x26 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega8/avr4/crtatmega8.o
                 0x00000000                __vector_default
@@ -308,53 +311,68 @@ END GROUP
                 0x00000072       0x1a alarm.o
                 0x00000072                init_ALARM_ISR
  .text.__vector_8
-                0x0000008c       0x64 alarm.o
+                0x0000008c       0x5e alarm.o
                 0x0000008c                __vector_8
  .text.init_DISPLAY
-                0x000000f0        0xe display_7_seg.o
-                0x000000f0                init_DISPLAY
+                0x000000ea        0xe display_7_seg.o
+                0x000000ea                init_DISPLAY
  .text.write_buffer
-                0x000000fe       0x4c display_7_seg.o
-                0x000000fe                write_buffer
+                0x000000f8       0x4c display_7_seg.o
+                0x000000f8                write_buffer
  .text.set_light_delay
-                0x0000014a       0x10 display_7_seg.o
-                0x0000014a                set_light_delay
+                0x00000144       0x10 display_7_seg.o
+                0x00000144                set_light_delay
  .text.show_num
-                0x0000015a       0x80 display_7_seg.o
-                0x0000015a                show_num
+                0x00000154       0x80 display_7_seg.o
+                0x00000154                show_num
  .text.show_time
-                0x000001da       0x98 display_7_seg.o
-                0x000001da                show_time
- .text.write_byte
-                0x00000272       0x66 rtc.o
-                0x00000272                write_byte
- .text.write_register
-                0x000002d8       0x2c rtc.o
-                0x000002d8                write_register
- .text.read_register
-                0x00000304       0x2c rtc.o
-                0x00000304                read_register
+                0x000001d4       0x98 display_7_seg.o
+                0x000001d4                show_time
+ .text.TWI_START
+                0x0000026c        0xe rtc.o
+                0x0000026c                TWI_START
+ .text.TWI_MT_SLA_ACK
+                0x0000027a       0x10 rtc.o
+                0x0000027a                TWI_MT_SLA_ACK
+ .text.TWI_MT_DATA_ACK
+                0x0000028a        0xe rtc.o
+                0x0000028a                TWI_MT_DATA_ACK
+ .text.TWI_R_START
+                0x00000298        0xc rtc.o
+                0x00000298                TWI_R_START
+ .text.TWI_MR_SLA_ACK
+                0x000002a4       0x10 rtc.o
+                0x000002a4                TWI_MR_SLA_ACK
+ .text.TWI_READ_DATABYTE_NACK
+                0x000002b4        0xe rtc.o
+                0x000002b4                TWI_READ_DATABYTE_NACK
  .text.rtc_set_init
-                0x00000330        0x6 rtc.o
-                0x00000330                rtc_set_init
- .text.init_TIME_ISR
-                0x00000336       0x12 time.o
-                0x00000336                init_TIME_ISR
+                0x000002c2       0x1a rtc.o
+                0x000002c2                rtc_set_init
+ .text.rtc_read_sek
+                0x000002dc       0x2a rtc.o
+                0x000002dc                rtc_read_sek
+ .text.rtc_read_min
+                0x00000306       0x2a rtc.o
+                0x00000306                rtc_read_min
+ .text.rtc_read_hour
+                0x00000330       0x2a rtc.o
+                0x00000330                rtc_read_hour
  .text.__vector_9
-                0x00000348       0x6e time.o
-                0x00000348                __vector_9
- .text.init_IR  0x000003b6        0x8 ir.o
-                0x000003b6                init_IR
+                0x0000035a       0x6e time.o
+                0x0000035a                __vector_9
+ .text.init_IR  0x000003c8        0x8 ir.o
+                0x000003c8                init_IR
  .text.init_main
-                0x000003be        0xc main.o
-                0x000003be                init_main
- .text.main     0x000003ca       0x2a main.o
-                0x000003ca                main
-                0x000003f4                . = ALIGN (0x2)
+                0x000003d0        0xa main.o
+                0x000003d0                init_main
+ .text.main     0x000003da       0x3e main.o
+                0x000003da                main
+                0x00000418                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003f4        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
-                0x000003f4                _exit
-                0x000003f4                exit
+ .fini9         0x00000418        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
+                0x00000418                _exit
+                0x00000418                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -373,11 +391,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003f4        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
+ .fini0         0x00000418        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003f8                _etext = .
+                0x0000041c                _etext = .
 
-.data           0x00800060        0x0 load address 0x000003f8
+.data           0x00800060        0x0 load address 0x0000041c
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -418,8 +436,8 @@ END GROUP
                 0x0080006b                timer_overfl_counter
  *(COMMON)
                 0x0080006d                PROVIDE (__bss_end, .)
-                0x000003f8                __data_load_start = LOADADDR (.data)
-                0x000003f8                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000041c                __data_load_start = LOADADDR (.data)
+                0x0000041c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080006d        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -495,86 +513,87 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x140
+.debug_aranges  0x00000000      0x170
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x28 alarm.o
  .debug_aranges
                 0x00000028       0x40 display_7_seg.o
  .debug_aranges
-                0x00000068       0x50 rtc.o
+                0x00000068       0x80 rtc.o
  .debug_aranges
-                0x000000b8       0x28 time.o
+                0x000000e8       0x28 time.o
  .debug_aranges
-                0x000000e0       0x38 ir.o
+                0x00000110       0x38 ir.o
  .debug_aranges
-                0x00000118       0x28 main.o
+                0x00000148       0x28 main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x16c2
+.debug_info     0x00000000     0x1427
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x48c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega8/avr4/crtatmega8.o
  .debug_info    0x0000048c       0xf6 alarm.o
  .debug_info    0x00000582      0x381 display_7_seg.o
- .debug_info    0x00000903      0x78d rtc.o
- .debug_info    0x00001090      0x138 time.o
- .debug_info    0x000011c8      0x374 ir.o
- .debug_info    0x0000153c      0x186 main.o
+ .debug_info    0x00000903      0x43b rtc.o
+ .debug_info    0x00000d3e      0x138 time.o
+ .debug_info    0x00000e76      0x374 ir.o
+ .debug_info    0x000011ea      0x23d main.o
 
-.debug_abbrev   0x00000000      0xabf
+.debug_abbrev   0x00000000      0xaed
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x44e C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega8/avr4/crtatmega8.o
  .debug_abbrev  0x0000044e       0x78 alarm.o
  .debug_abbrev  0x000004c6      0x19b display_7_seg.o
- .debug_abbrev  0x00000661      0x1bb rtc.o
- .debug_abbrev  0x0000081c       0x90 time.o
- .debug_abbrev  0x000008ac      0x144 ir.o
- .debug_abbrev  0x000009f0       0xcf main.o
+ .debug_abbrev  0x00000661      0x180 rtc.o
+ .debug_abbrev  0x000007e1       0x90 time.o
+ .debug_abbrev  0x00000871      0x144 ir.o
+ .debug_abbrev  0x000009b5      0x138 main.o
 
-.debug_line     0x00000000      0xcc3
+.debug_line     0x00000000      0xce0
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x109 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega8/avr4/crtatmega8.o
  .debug_line    0x00000109      0x106 alarm.o
  .debug_line    0x0000020f      0x2e7 display_7_seg.o
- .debug_line    0x000004f6      0x372 rtc.o
- .debug_line    0x00000868       0xf9 time.o
- .debug_line    0x00000961      0x230 ir.o
- .debug_line    0x00000b91      0x132 main.o
+ .debug_line    0x000004f6      0x323 rtc.o
+ .debug_line    0x00000819       0xf9 time.o
+ .debug_line    0x00000912      0x230 ir.o
+ .debug_line    0x00000b42      0x19e main.o
 
-.debug_frame    0x00000000      0x240
+.debug_frame    0x00000000      0x2a0
  *(.debug_frame)
- .debug_frame   0x00000000       0x50 alarm.o
- .debug_frame   0x00000050       0x6c display_7_seg.o
- .debug_frame   0x000000bc       0x84 rtc.o
- .debug_frame   0x00000140       0x50 time.o
- .debug_frame   0x00000190       0x7c ir.o
- .debug_frame   0x0000020c       0x34 main.o
+ .debug_frame   0x00000000       0x48 alarm.o
+ .debug_frame   0x00000048       0x6c display_7_seg.o
+ .debug_frame   0x000000b4       0xec rtc.o
+ .debug_frame   0x000001a0       0x50 time.o
+ .debug_frame   0x000001f0       0x7c ir.o
+ .debug_frame   0x0000026c       0x34 main.o
 
-.debug_str      0x00000000      0x4fe
+.debug_str      0x00000000      0x586
  *(.debug_str)
  .debug_str     0x00000000      0x17a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega8/avr4/crtatmega8.o
  .debug_str     0x0000017a      0x198 alarm.o
                                 0x1d4 (size before relaxing)
  .debug_str     0x00000312       0xea display_7_seg.o
                                 0x264 (size before relaxing)
- .debug_str     0x000003fc       0x6b rtc.o
-                                0x21d (size before relaxing)
- .debug_str     0x00000467       0x3f time.o
+ .debug_str     0x000003fc       0xe9 rtc.o
+                                0x26e (size before relaxing)
+ .debug_str     0x000004e5       0x3a time.o
                                 0x1c8 (size before relaxing)
- .debug_str     0x000004a6       0x42 ir.o
+ .debug_str     0x0000051f       0x42 ir.o
                                 0x1fa (size before relaxing)
- .debug_str     0x000004e8       0x16 main.o
-                                0x1d5 (size before relaxing)
+ .debug_str     0x00000561       0x25 main.o
+                                0x22c (size before relaxing)
 
-.debug_loc      0x00000000      0xf79
+.debug_loc      0x00000000      0xb13
  *(.debug_loc)
- .debug_loc     0x00000000       0x56 alarm.o
- .debug_loc     0x00000056      0x428 display_7_seg.o
- .debug_loc     0x0000047e      0x71a rtc.o
- .debug_loc     0x00000b98       0x56 time.o
- .debug_loc     0x00000bee      0x38b ir.o
+ .debug_loc     0x00000000       0x49 alarm.o
+ .debug_loc     0x00000049      0x428 display_7_seg.o
+ .debug_loc     0x00000471      0x23a rtc.o
+ .debug_loc     0x000006ab       0x56 time.o
+ .debug_loc     0x00000701      0x38b ir.o
+ .debug_loc     0x00000a8c       0x87 main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -594,14 +613,14 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xe0
+.debug_ranges   0x00000000      0x110
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x18 alarm.o
  .debug_ranges  0x00000018       0x30 display_7_seg.o
- .debug_ranges  0x00000048       0x40 rtc.o
- .debug_ranges  0x00000088       0x18 time.o
- .debug_ranges  0x000000a0       0x28 ir.o
- .debug_ranges  0x000000c8       0x18 main.o
+ .debug_ranges  0x00000048       0x70 rtc.o
+ .debug_ranges  0x000000b8       0x18 time.o
+ .debug_ranges  0x000000d0       0x28 ir.o
+ .debug_ranges  0x000000f8       0x18 main.o
 
 .debug_macro
  *(.debug_macro)

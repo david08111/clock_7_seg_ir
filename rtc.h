@@ -13,12 +13,8 @@
 #define F_CPU 8000000
 #endif
 
-#ifndef RTC_SDA
-#define RTC_SDA PC0
-#endif
-
-#ifndef RTC_SCL
-#define RTC_SCL PC1
+#ifndef SLA_ADDR
+#define SLA_ADDR 0xDE
 #endif
 
 #ifndef RTC_SER_FREQ
@@ -27,14 +23,20 @@
 
 #include <avr/io.h>
 #include <avr/delay.h>
+#include <util/twi.h>
 
 void init_RTC();
-int get_ack();
-void write_byte(uint8_t buff_foo);
-void write_register(uint8_t reg, uint8_t val);
-uint8_t read_byte();
-uint8_t read_register(uint8_t reg);
+void TWI_START();
+void TWI_MT_SLA_ACK();
+void TWI_MT_DATA_ACK(uint8_t send_data);
+void TWI_R_START();
+void TWI_MR_SLA_ACK();
+uint8_t TWI_READ_DATABYTE_NACK();
+void TWI_STOP();
 void rtc_set_init();
-
+uint8_t rtc_read_reg(uint8_t reg_addr);
+uint8_t rtc_read_sek();
+uint8_t rtc_read_min();
+uint8_t rtc_read_hour();
 
 #endif /* RTC_H_ */

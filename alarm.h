@@ -13,8 +13,12 @@
 #define F_CPU 8000000
 #endif
 
+#ifndef ALARM_FREQ
+#define ALARM_FREQ 440
+#endif
+
 #ifndef ALARM_SOUND
-#define ALARM_SOUND (100000/200)
+#define ALARM_SOUND 100000/(2 * ALARM_FREQ) //(100000/200)
 #endif
 
 /*#ifndef ALARM_TIME
